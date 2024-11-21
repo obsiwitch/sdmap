@@ -1,0 +1,34 @@
+pkgname='sdmap'
+pkgver=0.5.5
+pkgrel=2
+pkgdesc='Steam Deck Controller custom mapping'
+arch=('x86_64')
+url='https://github.com/obsiwitch/dotfiles'
+
+options=('!debug')
+makedepends=('rust')
+
+_prepare() { :; }
+
+_build() {
+    cargo build --release
+}
+
+_check() {
+    cargo test --release
+}
+
+_package() {
+    install -Dm 755 'target/release/sdmap-'{daemon,sticker,gui} -t "$pkgdir/usr/bin"
+    install -Dm 644 'data/sdmap.service' -t "$pkgdir/usr/lib/systemd/system"
+
+    # Disable steam udev rules. Prevent the Steam Deck controller evdev device
+    # from disappearing when the hidraw interface is in use (e.g. steam, chromium).
+    # ref: `a symlink in /etc/ with the same name as a rules file in /usr/lib/,
+    # pointing to /dev/null, disables the rules file entirely.` man udev
+    install -Dm 644 '/dev/null' -T "$pkgdir/etc/udev/rules.d/70-steam-input.rules"
+    install -Dm 644 '/dev/null' -T "$pkgdir/etc/udev/rules.d/70-steam-vr.rules"
+
+    install -Dm 644 'data/initcpio/sdmap.build' -T "$pkgdir/usr/lib/initcpio/install/sdmap"
+    install -Dm 644 'data/initcpio/sdmap.runtime' -T "$pkgdir/usr/lib/initcpio/hooks/sdmap"
+}

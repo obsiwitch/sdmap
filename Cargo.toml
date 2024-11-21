@@ -1,0 +1,12 @@
+[package]
+name = "sdmap"
+version = "0.5.5"
+edition = "2021"
+
+[dependencies]
+evdev = "0.12.1"
+libc = "0.2"
+xkbcommon = "0.5"
+anyhow = "1.x"
+notify-rust = "4.x"
+inotify = "0.11"

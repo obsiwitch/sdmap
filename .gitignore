@@ -1,0 +1,6 @@
+target/
+arch/local/*
+arch/remote/*
+!arch/local/PKGBUILD
+!arch/remote/PKGBUILD
+Cargo.lock

@@ -1,0 +1,27 @@
+. ../PKGBUILD
+
+_pkgpath="dotfiles/packages/$pkgname"
+
+source=("git+$url.git")
+sha256sums=('SKIP')
+
+prepare() {
+    cd "$_pkgpath"
+    _prepare
+}
+
+build() {
+    cd "$_pkgpath"
+    _build
+}
+
+check() {
+    cd "$_pkgpath"
+    _check
+}
+
+package() {
+    cd "$_pkgpath"
+    _package
+}
+

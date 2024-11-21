@@ -1,0 +1,22 @@
+. ../PKGBUILD
+
+prepare() {
+    cd "../.."
+    _prepare
+}
+
+build() {
+    cd '../..'
+    _build
+}
+
+check() {
+    cd '../..'
+    _check
+}
+
+package() {
+    cd '../../..'
+    _package
+}
+

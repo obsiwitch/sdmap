@@ -1,0 +1,8 @@
+[Unit]
+Description=Steam Deck Controller custom mapping
+
+[Service]
+ExecStart=/usr/bin/sdmap-daemon
+
+[Install]
+WantedBy=multi-user.target

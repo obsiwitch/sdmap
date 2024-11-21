@@ -1,0 +1,16 @@
+#!/usr/bin/env bash
+
+build() {
+    add_module uinput
+    add_binary sdmap-daemon
+    add_binary pkill
+    add_runscript
+}
+
+help() {
+    cat <<HELPEOF
+This hook runs the sdmap daemon to enable the Steam Deck controller custom
+mapping during early userspace. This allows to type encryption passphrases
+without an external keyboard.
+HELPEOF
+}

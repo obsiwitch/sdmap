@@ -1,0 +1,9 @@
+#!/usr/bin/ash
+
+run_hook() {
+    sdmap-daemon &
+}
+
+run_cleanuphook() {
+    pkill sdmap-daemon
+}
