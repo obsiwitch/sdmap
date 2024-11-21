@@ -4,14 +4,14 @@ https://user-images.githubusercontent.com/26996026/217802779-e0e85afe-37fc-4486-
 
 ---
 
-Sdmap remaps the Steam Deck controller and provides a gamepad mode and a desktop mode without the need to launch Steam. You need a kernel with support for the controller (linux 6.3 or [linux-neptune](https://steamdeck-packages.steamos.cloud/archlinux-mirror/jupiter-main/os/x86_64/) or [hid-steam-deck-dkms](https://github.com/obsiwitch/dotfiles/tree/2ac2bb8d0bff49cac9b5d80f6b1d7e849707f293/packages/hid-steam-deck-dkms) or the following patches applied [p1](https://gitlab.com/evlaV/linux-integration/-/commit/72ce570d0b3ae23aaf74ae604d58a2c819d1b4a8) [p2](https://gitlab.com/evlaV/linux-integration/-/commit/4196619768de19274fcdba116eba81e36f9436bf) [p3](https://gitlab.com/evlaV/linux-integration/-/commit/c616088b5ac4fe34faadc314d71dc14c2e7ebc8c)).
+Sdmap remaps the Steam Deck controller and provides a gamepad mode and a desktop mode without the need to launch Steam. You need a kernel with support for the controller (linux >=6.3).
 
 ~~~
 SD controller -> Sdmap -> ungrab -> game
 (input dev)            -> grab -> keyboard+trackpad (virtual dev) -> libinput -> wayland/xorg
 ~~~
 
-**Please note that since [linux 6.8](https://github.com/torvalds/linux/commit/cd438e57dd05b077f4e87c1567beafb2377b6d6b) the controller starts in a mode in which sdmap doesn't work. To fix this, long press the start button.**
+**Please note that since [linux 6.8](https://github.com/torvalds/linux/commit/cd438e57dd05b077f4e87c1567beafb2377b6d6b) the controller starts in lizard mode. Long press the start button to switch to gamepad mode to be able to use sdmap.**
 
 ## Install
 
