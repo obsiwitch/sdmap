@@ -8,14 +8,14 @@ use anyhow::Result;
 use sdmap::VKBD_LAYOUT;
 
 struct Daemon {
+    _devs_lizard: Vec<Device>,
     dev_in: Device,
     absinfos_in: [input_absinfo; 64],
     cache_in: DeviceState,
-    _devs_lizard: Vec<Device>,
 
     dev_out: VirtualDevice,
-    kbd_mode: bool,
-
+    desktop_mode: bool,
+    vkbd_ff: FFEffect,
     scroll_daemon: ScrollDaemon,
 
     ipc: File,
@@ -27,6 +27,7 @@ impl Daemon {
             .unwrap().1;
         dev_in.grab()?;
         let absinfos_in = dev_in.get_abs_state()?;
+        let cache_in = dev_in.cached_state().clone();
 
         // grab lizard mode devices to make sure no events get through (e.g.
         // scroll events on left trackpad after waking steam deck from suspend)
@@ -51,16 +52,31 @@ impl Daemon {
             .with_relative_axes(&AttributeSet::from_iter([Rel::REL_X, Rel::REL_Y]))?
             .build()?;
 
+        let vkbd_ff = Self::upload_ff(&mut dev_in)?;
+
         Ok(Self {
-            absinfos_in,
-            cache_in: dev_in.cached_state().clone(),
-            dev_in,
             _devs_lizard,
+            dev_in,
+            absinfos_in,
+            cache_in,
             dev_out,
-            kbd_mode: true,
+            desktop_mode: true,
+            vkbd_ff,
             scroll_daemon: ScrollDaemon::new(absinfos_in[Abs::ABS_X.0 as usize].resolution)?,
             ipc: File::create("/run/sdmap")?,
         })
+    }
+
+    fn upload_ff(dev: &mut Device) -> Result<FFEffect> {
+        Ok(dev.upload_ff_effect(FFEffectData {
+            direction: 0,
+            trigger: FFTrigger::default(),
+            replay: FFReplay { length: 100, delay: 0 },
+            kind: FFEffectKind::Rumble {
+                strong_magnitude: u16::MAX,
+                weak_magnitude: u16::MAX,
+            },
+        })?)
     }
 
     // Create a new Key event. (shortcut)
@@ -92,7 +108,7 @@ impl Daemon {
     }
 
     // Return the position on the trackpad keyboard based on the position of
-    // ABS_HAT0. Return None if ABS_HAT0 isn't used.
+    // ABS_HAT0. Return (usize::MAX, usize::MAX) if ABS_HAT0 isn't used.
     pub fn vkbd_xy(&self, old: bool) -> (usize, usize) {
         let absvals = if old {
             self.cache_in.abs_vals().unwrap()
@@ -202,19 +218,26 @@ impl Daemon {
             self.scroll_daemon.scroll(absx, absy);
             vec!()
 
+        // left trackpad force feedback on vkbd cell change
+        } else if (evt_in.code() == Abs::ABS_HAT0X.0 || evt_in.code() == Abs::ABS_HAT0Y.0)
+            && self.vkbd_xy(false) != self.vkbd_xy(true)
+        {
+            self.vkbd_ff.play(1).unwrap();
+            vec!()
         } else {
             vec!()
         }
     }
 
     // Switch between desktop mode and gamepad mode if `BTN_THUMB` is pressed.
-    fn switch_mode(&mut self, events_in: &[InputEvent]) {
+    fn switch_mode_if(&mut self, events_in: &[InputEvent]) {
         // Ensures `BTN_THUMB` has just been pushed (events_in) and that no other
         // buttons are currently held (state_in).
         if events_in.iter().any(|e| e.code() == Key::BTN_THUMB.0 && e.value() == 1)
         && self.state_in().key_vals().unwrap().iter().eq(vec![Key::BTN_THUMB]) {
-            self.kbd_mode = !self.kbd_mode;
-            if self.kbd_mode {
+            self.desktop_mode = !self.desktop_mode;
+            if self.desktop_mode {
+                self.vkbd_ff = Self::upload_ff(&mut self.dev_in).unwrap();
                 self.dev_in.grab().unwrap();
             } else {
                 self.scroll_daemon.scroll(0, 0);
@@ -228,8 +251,8 @@ impl Daemon {
             self.cache_in = self.dev_in.cached_state().clone();
             let events_in: Vec<InputEvent> = self.dev_in.fetch_events()?.collect();
 
-            self.switch_mode(&events_in);
-            if !self.kbd_mode { continue; }
+            self.switch_mode_if(&events_in);
+            if !self.desktop_mode { continue; }
 
             let events_out: Vec<InputEvent> = events_in.into_iter()
                 .flat_map(|evt_in| self.remap(evt_in))
