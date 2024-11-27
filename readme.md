@@ -50,7 +50,7 @@ You might also want to use sdmap during early userspace to be able to type your 
 
 ![sticker](https://i.imgur.com/DHEOmFD.png)
 
-A [sticker](https://i.imgur.com/DHEOmFD.png) can be generated and [printed](https://i.imgur.com/a7Mk0GY.jpg) for the virtual keyboard on the left trackpad. It's a simple solution that didn't require me to develop a GUI. I printed the sticker on photo paper, pierced holes from the back of the paper to create bumps for tactile feedback, and glued it.
+A [sticker](https://i.imgur.com/DHEOmFD.png) can be generated and [printed](https://i.imgur.com/a7Mk0GY.jpg) for the virtual keyboard on the left trackpad. It's a simple solution that didn't require me to develop a GUI. I printed the sticker on photo paper and glued it on the trackpad. The controller vibrates to provide feedback when the user moves their finger between cells.
 
 ~~~sh
 sdmap-sticker > sticker.html
