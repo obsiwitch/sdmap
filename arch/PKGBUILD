@@ -1,6 +1,6 @@
 pkgname='sdmap'
-pkgver=0.5.6
-pkgrel=2
+pkgver=0.5.7
+pkgrel=1
 pkgdesc='Steam Deck Controller custom mapping'
 arch=('x86_64')
 url='https://github.com/obsiwitch/sdmap'
