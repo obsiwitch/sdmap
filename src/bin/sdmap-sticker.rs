@@ -1,4 +1,4 @@
-const BUTTONS: [char; 6] = ['a', 'b', 'y', 'x', 's', 'd'];
+const BUTTONS: [char; 4] = ['a', 'b', 'y', 'x'];
 
 fn main() {
     let layout = sdmap::keysyms_layout();
@@ -11,10 +11,8 @@ fn main() {
         td {{text-align:center;}}
         td.a {{color:LimeGreen;}}
         td.b {{color:Crimson;}}
-        td.x {{color:DodgerBlue;}}
         td.y {{color:Orange;}}
-        td.s {{color:MediumPurple;}}
-        td.d {{color:SlateGray; border-right:1px solid black;}}
+        td.x {{color:DodgerBlue; border-right:1px solid black;}}
         span.l0 {{font-size:30px; font-weight:bold;}}
         </style>
         <table>"#);

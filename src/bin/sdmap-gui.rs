@@ -16,8 +16,8 @@ fn pango_escape(character: &str) -> String {
 
 fn main() -> Result<()> {
     // partially flatten the layout and escape certain characters
-    let mut layout_nm: [[String; 2]; 4] = Default::default();
-    let mut layout_hl: [[String; 2]; 4] = Default::default();
+    let mut layout_nm: [[String; 3]; 4] = Default::default();
+    let mut layout_hl: [[String; 3]; 4] = Default::default();
     for (i, row) in sdmap::keysyms_layout().iter().enumerate() {
         for (j, col) in row.iter().enumerate() {
             for (k, key) in col[0..col.len() - 1].iter().enumerate() {

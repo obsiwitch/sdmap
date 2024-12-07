@@ -71,7 +71,7 @@ impl Daemon {
         Ok(dev.upload_ff_effect(FFEffectData {
             direction: 0,
             trigger: FFTrigger::default(),
-            replay: FFReplay { length: 100, delay: 0 },
+            replay: FFReplay { length: 200, delay: 0 },
             kind: FFEffectKind::Rumble {
                 strong_magnitude: u16::MAX,
                 weak_magnitude: u16::MAX,
