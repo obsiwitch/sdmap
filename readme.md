@@ -50,13 +50,15 @@ You might also want to use sdmap during early userspace to be able to type your 
 
 ![sticker](https://i.imgur.com/GZ2nFoR.png)
 
-A sticker can be generated and [printed](https://i.imgur.com/a7Mk0GY.jpg) for the virtual keyboard on the left trackpad. It's a simple solution that didn't require me to (initially) develop a GUI. I printed the sticker on photo paper and glued it on the trackpad. The controller vibrates to provide feedback when the user moves their finger between cells. You can also 3D print a frame ([model](data/kbd_frame.scad), [screenshot](https://i.imgur.com/DkM5mi5.png)) that you can fit on top of the sticker and trackpad.
+A sticker can be generated and [printed](https://i.imgur.com/a7Mk0GY.jpg) for the virtual keyboard on the left trackpad. It's a simple solution that (initially) didn't require me to develop a GUI. I printed the sticker on photo paper and glued it on the trackpad. The controller vibrates to provide feedback when the user moves their finger between cells.
 
 ~~~sh
 sdmap-sticker > sticker.html
 chromium --headless --screenshot=sticker.png sticker.html
 convert -trim -density 300 sticker.png{,} # 378px / 300ppi = 1.26in ≈ 3.2cm
 ~~~
+
+You can also 3D print a frame ([model](data/kbd_frame.scad), [screenshot](https://i.imgur.com/DkM5mi5.png)) that you can fit on top of the sticker and trackpad.
 
 ## GUI
 
