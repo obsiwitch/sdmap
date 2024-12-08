@@ -19,7 +19,7 @@ _check() {
 }
 
 _package() {
-    install -Dm 755 'target/release/sdmap-'{daemon,sticker} -t "$pkgdir/usr/bin"
+    install -Dm 755 'target/release/sdmap-'{daemon,sticker,gui} -t "$pkgdir/usr/bin"
     install -Dm 644 'data/sdmap.service' -t "$pkgdir/usr/lib/systemd/system"
 
     # Disable steam udev rules. Prevent the Steam Deck controller evdev device

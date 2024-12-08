@@ -1,5 +1,6 @@
 use std::{time, thread};
 use std::sync::{Arc, Mutex};
+use std::{fs::File, io::Write, io::Seek};
 use evdev::{*, uinput::*, AbsoluteAxisType as Abs, RelativeAxisType as Rel};
 use libc::input_absinfo;
 use anyhow::Result;
@@ -16,6 +17,8 @@ struct Daemon {
     desktop_mode: bool,
     vkbd_ff: FFEffect,
     scroll_daemon: ScrollDaemon,
+
+    ipc: File,
 }
 impl Daemon {
     pub fn new() -> Result<Self> {
@@ -60,6 +63,7 @@ impl Daemon {
             desktop_mode: true,
             vkbd_ff,
             scroll_daemon: ScrollDaemon::new(absinfos_in[Abs::ABS_X.0 as usize].resolution)?,
+            ipc: File::create("/run/sdmap")?,
         })
     }
 
@@ -124,6 +128,18 @@ impl Daemon {
                         / ((absinfo.maximum * 2) + 1);
             (vkbdx as usize, vkbdy as usize)
         }
+    }
+
+    // Write the current trackpad keyboard position in the shared file.
+    pub fn vkbd_send(&mut self) -> Result<()> {
+        let old_keypos = self.vkbd_xy(true);
+        let new_keypos = self.vkbd_xy(false);
+        if old_keypos != new_keypos {
+            self.ipc.rewind()?;
+            self.ipc.set_len(0)?;
+            self.ipc.write_all(format!("{} {}", new_keypos.0, new_keypos.1).as_bytes())?;
+        }
+        Ok(())
     }
 
     // Map a physical key to a key of the trackpad keyboard depending on the current
@@ -242,6 +258,7 @@ impl Daemon {
                 .flat_map(|evt_in| self.remap(evt_in))
                 .collect();
             self.dev_out.emit(&events_out)?;
+            self.vkbd_send()?;
         }
     }
 }

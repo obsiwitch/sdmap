@@ -57,3 +57,9 @@ sdmap-sticker > sticker.html
 chromium --headless --screenshot=sticker.png sticker.html
 convert -trim -density 300 sticker.png{,} # 378px / 300ppi = 1.26in ≈ 3.2cm
 ~~~
+
+## GUI
+
+![sdmap-gui desktop notification](https://i.imgur.com/SkPcML1.png)
+
+I initially didn't develop a GUI and only relied on the sticker described above. Unfortunately I found it frustrating, often mistyping a character from the row above or below the one I intended. The current iteration of `sdmap-gui` is a simple desktop notification sent each time the finger moves to a different cell on the left trackpad.
